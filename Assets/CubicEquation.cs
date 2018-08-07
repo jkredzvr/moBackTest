@@ -39,7 +39,7 @@ public class CubicEquation : MonoBehaviour {
     [HideInInspector]
     public float sqErr = 4.0f;
 
-    private Vector2[] cubicPoints;
+    public Vector2[] cubicPoints;
 
     /// <summary>
     /// Compute a bezier curve going through all the points on a curve defined by a cubic equation. 
@@ -55,26 +55,25 @@ public class CubicEquation : MonoBehaviour {
         Vector3 p3 = new Vector3(x1, 0, y1);
 
         /// for demo purposes, use p0 and p3 for p1 and p2
-        /// TODO: compute p1 and p2 based on the cubic equation
+        
+        //Calculate points from cubic equation between x0 and x1
         cubicPoints = new Vector2[numIntervals];
         float interVal = (x1 - x0) / (numIntervals - 1.0f);
-        //cubicPoints[0] = new Vector2(x0, y0);
         for (int i = 0; i < numIntervals; i++)
         {
             cubicPoints[i] = new Vector2(x0 + i * interVal, GetY(x0 + i * interVal, a, b, c, d));
-            //EditorGUI.DrawRect(new Rect(cubicPoints[i],new Vector2(2.0f,2.0f)), Color.green);
             Handles.Label(new Vector3(cubicPoints[i].x, 0, cubicPoints[i].y), "p");
         }
 
 
         //Estimate p1 and p2 based on Least Fit Approx fitting on 1/3 of beginning and end of cubic points
         //using estimated p1 and p2, fit the Bezier values, onto the cubic 
-        return GenerateBezier(cubicPoints);
-
-        //Vector3 p1 = startTangent;
-        //Vector3 p2 = endTangent;
-
-        //return new Bezier(p0, p1, p2, p3);
+        BezierCalculations.BezierCurve bezCurve = BezierCalculations.FitCurve(cubicPoints, cubicPoints.Length, sqErr);
+        startPoint = new Vector3(bezCurve.v0.x, 0.0f, bezCurve.v0.y);
+        startTangent = new Vector3(bezCurve.v1.x, 0.0f, bezCurve.v1.y);
+        endTangent = new Vector3(bezCurve.v2.x, 0.0f, bezCurve.v2.y);
+        endPoint = new Vector3(bezCurve.v3.x, 0.0f, bezCurve.v3.y);
+        return new Bezier(startPoint, startTangent, endTangent, endPoint);
     }
 
     float GetY(float x, float a, float b, float c, float d)
@@ -85,16 +84,6 @@ public class CubicEquation : MonoBehaviour {
         return a * x3 + b * x2 + c * x + d;
     }
 
-    public Bezier GenerateBezier(Vector2[] cubicPoints)
-    {
-        BezierCalculations.BezierCurve bezCurve = BezierCalculations.FitCurve(cubicPoints, cubicPoints.Length, sqErr);
-        startPoint = new Vector3(bezCurve.v0.x, 0.0f, bezCurve.v0.y);
-        startTangent = new Vector3 ( bezCurve.v1.x,0.0f, bezCurve.v1.y);
-        endTangent = new Vector3(bezCurve.v2.x, 0.0f, bezCurve.v2.y);
-        endPoint = new Vector3(bezCurve.v3.x, 0.0f, bezCurve.v3.y);
-        return new Bezier(startPoint, startTangent, endTangent, endPoint);
-
-    }
 }
 
 [CustomEditor(typeof(CubicEquation))]
@@ -118,9 +107,7 @@ public class MathQuestionEditor: Editor
         DrawDefaultInspector();
 
         CubicEquation equation = target as CubicEquation;
-      
         equation.sqErr = EditorGUILayout.Slider(new GUIContent("Squared Error"),equation.sqErr, 0.0F, 10.0F);
-        
     }
 
 }
