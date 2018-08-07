@@ -141,16 +141,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392955783ed2ab54ba35f151f4550e01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  a: -1.2
-  b: 4.16
-  c: 1
-  d: 1
-  x0: 0
-  x1: -1.62
-  startPoint: {x: -0, y: 0, z: 0}
-  endPoint: {x: 2, y: 4, z: 0}
-  startTangent: {x: -6, y: -1.34, z: 12.136538}
-  endTangent: {x: 4.7621384, y: 3.3147426, z: 0.17456055}
+  a: 0
+  b: 0.3
+  c: -0.14
+  d: 0
+  x0: -8.57
+  x1: 6.73
+  startPoint: {x: -8.57, y: 0, z: 23.233269}
+  endPoint: {x: 6.73, y: 0, z: 12.645671}
+  startTangent: {x: -6.022087, y: 0, z: 11.4459}
+  endTangent: {x: -2.0958266, y: 0, z: -15.970183}
+  numIntervals: 8
+  sqErr: 2.58
 --- !u!4 &353460285
 Transform:
   m_ObjectHideFlags: 0
@@ -158,7 +160,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 353460283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.54, y: 0, z: 2.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

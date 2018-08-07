@@ -76,11 +76,26 @@ public class BezierCalculations : MonoBehaviour {
 
         /* Copy array	*/
         Vtemp = new Vector2[degree + 1];
+        if (degree == 3)
+        {
+            Vtemp[0] = V.v0;
+            Vtemp[1] = V.v1;
+            Vtemp[2] = V.v2;
+            Vtemp[3] = V.v3;
+        }
+        if (degree == 2)
+        {
+            Vtemp[0] = V.v0;
+            Vtemp[1] = V.v1;
+            Vtemp[2] = V.v2;
+        }
+        if (degree == 1)
+        {
+            Vtemp[0] = V.v0;
+            Vtemp[1] = V.v1;
+        }
 
-        Vtemp[0] = V.v0;
-        Vtemp[1] = V.v1;
-        Vtemp[2] = V.v2;
-        Vtemp[3] = V.v3;
+
 
         /* Triangle computation	*/
         for (i = 1; i <= degree; i++) {	
@@ -110,6 +125,20 @@ public class BezierCalculations : MonoBehaviour {
         tHat2 = ComputeRightTangent(d, nPts - 1);
         return FitCubic(d, 0, nPts - 1, tHat1, tHat2, error);
     }
+    
+    static float[] parametizer(Vector2[] points)
+    {
+        float numIntervals = points.Length;
+        float x0 = points[0].x;
+        float interVal = ( - points[points.Length-1].x) / (numIntervals - 1.0f);
+        //cubicPoints[0] = new Vector2(x0, y0);
+        float[] paramValues = new float[points.Length];
+        for (int i = 0; i < numIntervals; i++)
+        {
+            paramValues[i] = x0 + i * interVal;
+        }
+        return paramValues;
+    }
 
     /*
      *  FitCubic :
@@ -124,7 +153,7 @@ public class BezierCalculations : MonoBehaviour {
         int splitPoint=0;	/*  Point to split point set at	 */
         int nPts;		/*  Number of points in subset  */
         float iterationError; /*Error below which you try iterating  */
-        int maxIterations = 4; /*  Max times to try iterating  */
+        int maxIterations = 30; /*  Max times to try iterating  */
         Vector2 tHatCenter;   	/* Unit tangent vector at splitPoint */
         int i;
 
@@ -132,6 +161,8 @@ public class BezierCalculations : MonoBehaviour {
         nPts = last - first + 1;
 
         /*  Parameterize points, and attempt to fit curve */
+
+        //u = parametizer(d);
         u = ChordLengthParameterize(d, first, last);
         bezCurve = GenerateBezier(d, first, last, u, tHat1, tHat2);
 
@@ -160,27 +191,39 @@ public class BezierCalculations : MonoBehaviour {
             for (i = 0; i < maxIterations; i++) {
                 Debug.Log("iterating times: " + i);
                 uPrime = Reparameterize(d, first, last, u, bezCurve);
+                /*
+                Debug.Log("before v0" + bezCurve.v0+ "\n");
+                Debug.Log("before v1" + bezCurve.v1 + "\n");
+                Debug.Log("before v2" + bezCurve.v2 + "\n");
+                Debug.Log("before v3" + bezCurve.v3 + "\n");
+                */
                 bezCurve = GenerateBezier(d, first, last, uPrime, tHat1, tHat2);
+                /*
+                Debug.Log("after v0" + bezCurve.v0 + "\n");
+                Debug.Log("after v1" + bezCurve.v1 + "\n");
+                Debug.Log("after v2" + bezCurve.v2 + "\n");
+                Debug.Log("after v3" + bezCurve.v3 + "\n");
+                */
                 maxError = ComputeMaxError(d, first, last, bezCurve, uPrime, ref splitPoint);
                 if (maxError < error) {
                     return bezCurve;
                 }
                 u = uPrime;
             }
-            
+
         }
 
-        Debug.Log("shouldnt get to here2");
-        return new BezierCurve(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
-    }
+    Debug.Log("shouldnt get to here2");
+    return new BezierCurve(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+}
 
-    /*
-    *  Reparameterize:
-    *	Given set of points and their parameterization, try to find
-    *   a better parameterization.
-    *
-    */
-    static float[] Reparameterize(Vector2[] d, int first, int last, float[] u, BezierCurve bezCurve)
+/*
+*  Reparameterize:
+*	Given set of points and their parameterization, try to find
+*   a better parameterization.
+*
+*/
+                static float[] Reparameterize(Vector2[] d, int first, int last, float[] u, BezierCurve bezCurve)
     {
         int nPts = last - first + 1;
         int i;
