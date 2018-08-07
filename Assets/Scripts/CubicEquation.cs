@@ -107,7 +107,7 @@ public class MathQuestionEditor: Editor
         DrawDefaultInspector();
 
         CubicEquation equation = target as CubicEquation;
-        equation.sqErr = EditorGUILayout.Slider(new GUIContent("Squared Error"),equation.sqErr, 0.0F, 10.0F);
+        equation.sqErr = EditorGUILayout.Slider(new GUIContent("Squared Error"),equation.sqErr, 1.0F, 10.0F);
     }
 
 }

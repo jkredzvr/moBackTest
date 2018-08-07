@@ -2,37 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BezierCalculations : MonoBehaviour {
-
-    // Use this for initialization
-    void Start() {
-        Vector2[] z = {
-            new Vector2(0.0f, 0.0f),
-            new Vector2(0.0f, 1.0f),
-            new Vector2(0.0f, 2.0f),
-            new Vector2(0.0f, 3.0f),
-            new Vector2(0.0f, 4.0f),
-            new Vector2(0.0f, 5.0f),
-            new Vector2(0.0f, 6.0f),
-            new Vector2(0.0f, 7.0f),
-            new Vector2(1.0f, 8.0f),
-            new Vector2(0.0f, 9.0f),
-            new Vector2(0.0f, 10.0f)
-        };
-        float[] ans = ChordLengthParameterize(z, 0, 10);
-        Debug.Log(ans);
-        foreach (float i in ans)
-        {
-            Debug.Log(i);
-        }
-        float error = 4.0f;     /*  Squared error */
-        FitCurve(z, 11, error);		/*  Fit the Bezier curves */
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-    }
+public class BezierCalculations {
 
     /*
      *  ComputeMaxError :
@@ -169,52 +139,27 @@ public class BezierCalculations : MonoBehaviour {
         /*  Find max deviation of points to fitted curve */
         maxError = ComputeMaxError(d, first, last, bezCurve, u, ref splitPoint);
         if (maxError < error) {
-            //Draw bezier curve method
-            //Debug.Log("v0" + bezCurve.v0+ "\n");
-
-            //Debug.Log("v1" + bezCurve.v1 + "\n");
-
-            //Debug.Log("v2" + bezCurve.v2 + "\n");
-
-            //Debug.Log("v3" + bezCurve.v3 + "\n");
-
-
             return bezCurve;
         }
-
-        
 
         /*  If error not too large, try some reparameterization  */
         /*  and iteration */
         if (maxError < iterationError) {
             
             for (i = 0; i < maxIterations; i++) {
-                Debug.Log("iterating times: " + i);
+                
                 uPrime = Reparameterize(d, first, last, u, bezCurve);
-                /*
-                Debug.Log("before v0" + bezCurve.v0+ "\n");
-                Debug.Log("before v1" + bezCurve.v1 + "\n");
-                Debug.Log("before v2" + bezCurve.v2 + "\n");
-                Debug.Log("before v3" + bezCurve.v3 + "\n");
-                */
                 bezCurve = GenerateBezier(d, first, last, uPrime, tHat1, tHat2);
-                /*
-                Debug.Log("after v0" + bezCurve.v0 + "\n");
-                Debug.Log("after v1" + bezCurve.v1 + "\n");
-                Debug.Log("after v2" + bezCurve.v2 + "\n");
-                Debug.Log("after v3" + bezCurve.v3 + "\n");
-                */
                 maxError = ComputeMaxError(d, first, last, bezCurve, uPrime, ref splitPoint);
                 if (maxError < error) {
                     return bezCurve;
                 }
                 u = uPrime;
             }
-
         }
 
-    Debug.Log("shouldnt get to here2");
-    return new BezierCurve(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+    //If reached here, then algorithm usually splits the curve into two BezierCurves
+    return bezCurve;
 }
 
 /*
