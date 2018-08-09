@@ -7,30 +7,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
     {   
         //Rate of rotation for input WASD
         public float tiltAngle = .01f;
-        public float smooth = 5.0f;
-        public float tiltAroundZ = 0.0f;
-        public float tiltAroundX = 0.0f;
+        float tiltAroundZ = 0.0f;
+        float tiltAroundX = 0.0f;
 
         // Update is called once per frame
         void Update()
         {
-            
             //Rotate the sphere relative to World Space Up.
-            transform.Rotate(new Vector3(tiltAroundX, 0.0f, tiltAroundZ), Space.World);
-
-
-            //Old not working rotation method
-            //tiltAroundZ = tiltAroundZ % 360.0f;
-            //tiltAroundX = tiltAroundX % 360.0f;
-
-            //transform.eulerAngles = new Vector3(tiltAroundX, 0.0f, tiltAroundZ);
-            /*
-            //Quaternion Rotation
-            //Update Sphere rotation values
-            Quaternion target = Quaternion.Euler(tiltAroundX, 0, tiltAroundZ);
-            //Smooth lerp current rotation to target rotation 
-            transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
-            */
+            transform.Rotate(new Vector3(tiltAroundX, 0.0f, tiltAroundZ), Space.World); //, SpaceWorld
         }
 
         public void move(Vector3 moveVector)
